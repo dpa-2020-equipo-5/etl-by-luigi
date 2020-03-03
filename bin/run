@@ -1,5 +1,2 @@
-current_year=$(date +'%Y')
-current_month=$(date +'%-m')
-current_day=$(date +'%-d')
-
-PYTHONPATH='/Users/gemathus/itam-ds/etl-by-luigi/' luigi --module nyc_ccci_etl.luigi_tasks.load_task LoadTask --year=$current_year --month=$current_month --day=$current_day  --local-scheduler
+cd /home/ubuntu/nyc-ccci-etl
+PYTHONPATH='.' luigi --module nyc_ccci_etl.luigi_tasks.load_task LoadTask --year=$1 --month=$2 --day=$3  --local-scheduler
