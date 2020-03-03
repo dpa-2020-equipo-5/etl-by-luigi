@@ -2,8 +2,8 @@ import luigi
 import json
 import os
 
-from etl_dpa.tasks.extract import ExtractTask
-from etl_dpa.tasks.load import LoadTask
+from etl_dpa.luigi_tasks.extract import ExtractTask
+from etl_dpa.luigi_tasks.load import LoadTask
 
 
 from etl_dpa.commons.build_tmp_filename import build_tmp_filename

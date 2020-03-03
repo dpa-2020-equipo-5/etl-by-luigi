@@ -1,3 +1,4 @@
 .vscode
-tmp
 settings.ini
+__pycache__
+.DS_Store

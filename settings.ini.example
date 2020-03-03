@@ -1,2 +1,5 @@
 [API]
 app_token=APPTOKENREAL
+
+[DATABASE]
+connection_url=postgres://

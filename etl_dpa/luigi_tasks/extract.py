@@ -2,7 +2,7 @@ import luigi
 import json
 import os
 
-from etl_dpa.etl.extraction import Extraction
+from etl_dpa.etl.extraction_procedure import ExtractionProcedure
 
 class ExtractTask(luigi.Task):
     year = luigi.IntParameter()
@@ -13,7 +13,7 @@ class ExtractTask(luigi.Task):
         return "inspections_{}_{}_{}".format(str(self.year), str(self.month), str(self.day))
 
     def run(self):
-        etl_extract = Extraction(self.year, self.month, self.day)
+        etl_extract = ExtractionProcedure(self.year, self.month, self.day)
         result = etl_extract.execute()
 
         with self.output().open('w') as output_file:
