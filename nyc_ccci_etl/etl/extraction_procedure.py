@@ -1,5 +1,5 @@
 from sodapy import Socrata
-from etl_dpa.commons.configuration import get_app_token
+from nyc_ccci_etl.commons.configuration import get_app_token
 
 class ExtractionProcedure():
     def __init__(self, year, month, day):

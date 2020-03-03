@@ -2,15 +2,13 @@ import luigi
 import json
 import os
 
-from etl_dpa.etl.extraction_procedure import ExtractionProcedure
+from nyc_ccci_etl.etl.extraction_procedure import ExtractionProcedure
 
 class ExtractTask(luigi.Task):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
-
-    def build_tmp_filename(self):
-        return "inspections_{}_{}_{}".format(str(self.year), str(self.month), str(self.day))
+    tmp_path = luigi.Parameter()
 
     def run(self):
         etl_extract = ExtractionProcedure(self.year, self.month, self.day)
@@ -20,4 +18,4 @@ class ExtractTask(luigi.Task):
             json.dump(result, output_file)
 
     def output(self):
-        return luigi.local_target.LocalTarget("tmp/{}.json".format(self.build_tmp_filename()))
+        return luigi.local_target.LocalTarget(self.tmp_path)
