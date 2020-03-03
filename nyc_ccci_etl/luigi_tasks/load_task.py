@@ -17,8 +17,14 @@ class LoadTask(luigi.Task):
 
     def run(self):
         etl_load = LoadingProcedure(self.tmp_path)
-        if etl_load.execute():
-            print("{}Alert admins that all ok{}".format("-"*20, "-"*20))
+        result, row_count = etl_load.execute()
+        if result:
+            print("\n"*3)
+            print("-"*100)
+            print("Status: OK")
+            print("Inserted {} rows".format(str(row_count)))
+            print("-"*100)
+            print("\n"*3)
         else:
             print("{}Nofify :({}".format("-"*20, "-"*20))
         os.remove(self.tmp_path)

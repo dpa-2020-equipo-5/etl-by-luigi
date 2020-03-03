@@ -15,7 +15,7 @@ class LoadingProcedure():
             with open(self.tmp_json_path) as json_data:
                 record_list = json.load(json_data)
             if len(record_list) == 0:
-                return True
+                return True, 0
             
             sql = json_to_sql_inserts('rawdata.inspections',record_list)
             
@@ -23,6 +23,6 @@ class LoadingProcedure():
             self.connection.commit()
             self.cursor.close()
             self.connection.close()
-            return True
+            return True, len(record_list)
         except:
-            return False
+            return False, 0
