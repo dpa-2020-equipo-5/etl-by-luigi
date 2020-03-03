@@ -1,8 +1,9 @@
-import pandas as pd
-from nyc_ccci_etl.commons.configuration import get_database_connection_url
-from nyc_ccci_etl.utils.json_to_sql_inserts import json_to_sql_inserts
 import psycopg2
 import json
+
+from nyc_ccci_etl.commons.configuration import get_database_connection_url
+from nyc_ccci_etl.utils.json_to_sql_inserts import json_to_sql_inserts
+
 class LoadingProcedure():
     def __init__(self, json_path):
         self.tmp_json_path = json_path
