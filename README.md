@@ -25,7 +25,7 @@ bin/run 2020 3 2
 
 ### Diagrama de architectura 2
 
-![Diagrama de arquitectura](docs/arq1.jpg)
+![Diagrama de arquitectura](docs/arq2.jpg)
 
 
 
