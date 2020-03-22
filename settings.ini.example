@@ -1,5 +1,10 @@
 [API]
-app_token=APPTOKENREAL
+app_token=APPTOKEN
 
 [DATABASE]
-connection_url=postgres://
+host=localhost
+database= database
+user=dbuser
+password=pwd
+schema=dbschema
+table=dbtable
