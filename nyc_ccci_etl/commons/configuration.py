@@ -14,8 +14,7 @@ def get_database_connection_parameters():
         config.get('DATABASE','host'),
         config.get('DATABASE','database'),
         config.get('DATABASE','user'),
-        config.get('DATABASE','password'),
-        config.get('DATABASE','table')
+        config.get('DATABASE','password')
     )
 
 def get_database_name():
