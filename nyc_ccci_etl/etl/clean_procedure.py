@@ -50,4 +50,4 @@ class CleanProcedure():
             df.loc[df[col] == np.nan, col] = -1
         
         df = df.drop_duplicates()
-        return [tuple(x) for x in df.to_numpy()]
+        return [tuple(x) for x in df.to_numpy()], list(df.columns)

@@ -1,2 +1,2 @@
 cd /home/ubuntu/nyc-ccci-etl
-PYTHONPATH='.' luigi --module nyc_ccci_etl.luigi_tasks.load_task LoadTask --year=$1 --month=$2 --day=$3  --local-scheduler
+PYTHONPATH='.' luigi --module nyc_ccci_etl.luigi_tasks.nyc_ccci_pipeline NYCCCCIPipeline  --year=$1 --month=$2 --day=$3
