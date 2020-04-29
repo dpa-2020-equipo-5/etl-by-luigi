@@ -15,10 +15,6 @@ class UpdateStaticCenters:
             database = database,
         )
         self.engine = create_engine(engine_string)
-        self.rows = None
-        self.columns = None
-        self.column_tupples =  None
-
 
     def execute(self):
         df = pd.read_sql_table('inspections', self.engine, schema="clean")
@@ -36,9 +32,3 @@ class UpdateStaticCenters:
         #Seleccionando las varibales a usar en el modelo
         tabla_3 = tabla_3.drop(df.columns[[0,1,2,3,4,5,6,7,8,9,10,15,16,17,18,19,21,23,25,27]], axis=1)
         return [tuple(x) for x in tabla_3.to_numpy()], [(c, 'VARCHAR') for c in list(tabla_3.columns)]
-
-    def get_rows(self):
-        return self.rows
-    def get_columns(self):
-        return self.column_tupples
-

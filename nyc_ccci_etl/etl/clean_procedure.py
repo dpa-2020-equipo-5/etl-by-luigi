@@ -38,16 +38,11 @@ class CleanProcedure():
             df[col] = df[col].str.replace('ó', 'o')
             df[col] = df[col].str.replace('ú', 'u')
             df[col] = df[col].str.replace(' ', '_')
-        
-        # for col in df.select_dtypes('object'):
-        #     df.loc[df[col] == 'na', col] = ''
-        #     df.loc[df[col] == 'nan', col] = ''
-        # for col in df.select_dtypes('datetime'):
-        #     df.loc[df[col] == 'na', col] = '9999-99-99'
-        #     df.loc[df[col] == 'nan', col] = '9999-99-99'
 
-        # for col in df.select_dtypes('number'):
-        #     df.loc[df[col] == np.nan, col] = -1
-        
+        column_order = ['centername','legalname','building','street','borough','zipcode','phone','permitnumber','permitexp','status','agerange','maximumcapacity','dc_id','programtype','facilitytype','childcaretype','bin','url','datepermitted','actual','violationratepercent','violationavgratepercent','totaleducationalworkers','averagetotaleducationalworkers','publichealthhazardviolationrate','averagepublichealthhazardiolationrate','criticalviolationrate','avgcriticalviolationrate','inspectiondate','regulationsummary','violationcategory','healthcodesubsection','violationstatus','inspectionsummaryresult']
+
         df = df.drop_duplicates()
-        return [tuple(x) for x in df.to_numpy()], list(df.columns)
+        if len(df) > 0:
+            return [tuple(x) for x in df[column_order].to_numpy()], list(df.columns)
+        else:
+            return [], ()
