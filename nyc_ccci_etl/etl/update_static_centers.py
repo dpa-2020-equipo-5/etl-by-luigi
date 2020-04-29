@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
-#from nyc_ccci_etl.etl.feature_engineering import FeatureEngineering
-#fe = FeatureEngineering()
+
 class UpdateStaticCenters:
     def __init__(self):
         host, database, user, password = get_database_connection_parameters()
