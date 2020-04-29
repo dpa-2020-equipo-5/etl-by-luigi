@@ -15,44 +15,8 @@ class LoadCleanInspectionsTask(CopyToTable):
 
     host, database, user, password = get_database_connection_parameters()
     table = "clean.inspections"
-
     #columnas de clean.inspections
-    columns = [
-        ('centername', 'VARCHAR'),
-        ('legalname', 'VARCHAR'),
-        ('building', 'VARCHAR'),
-        ('street', 'VARCHAR'),
-        ('borough', 'VARCHAR'),
-        ('zipcode', 'VARCHAR'),
-        ('phone', 'VARCHAR'),
-        ('permitnumber', 'VARCHAR'),
-        ('permitexp', 'VARCHAR'),
-        ('status', 'VARCHAR'),
-        ('agerange', 'VARCHAR'),
-        ('maximumcapacity', 'VARCHAR'),
-        ('dc_id', 'VARCHAR'),
-        ('programtype', 'VARCHAR'),
-        ('facilitytype', 'VARCHAR'),
-        ('childcaretype', 'VARCHAR'),
-        ('bin', 'VARCHAR'),
-        ('url', 'VARCHAR'),
-        ('datepermitted', 'VARCHAR'),
-        ('actual', 'VARCHAR'),
-        ('violationratepercent', 'VARCHAR'),
-        ('violationavgratepercent', 'VARCHAR'),
-        ('totaleducationalworkers', 'VARCHAR'),
-        ('averagetotaleducationalworkers', 'VARCHAR'),
-        ('publichealthhazardviolationrate', 'VARCHAR'),
-        ('averagepublichealthhazardiolationrate', 'VARCHAR'),
-        ('criticalviolationrate', 'VARCHAR'),
-        ('avgcriticalviolationrate', 'VARCHAR'),
-        ('inspectiondate', 'VARCHAR'),
-        ('regulationsummary', 'VARCHAR'),
-        ('violationcategory', 'VARCHAR'),
-        ('healthcodesubsection', 'VARCHAR'),
-        ('violationstatus', 'VARCHAR'),
-        ('inspectionsummaryresult', 'VARCHAR')
-    ]
+    columns = [('centername', 'VARCHAR'), ('legalname', 'VARCHAR'), ('building', 'VARCHAR'), ('street', 'VARCHAR'), ('borough', 'VARCHAR'), ('zipcode', 'VARCHAR'), ('phone', 'VARCHAR'), ('permitnumber', 'VARCHAR'), ('permitexp', 'VARCHAR'), ('status', 'VARCHAR'), ('agerange', 'VARCHAR'), ('maximumcapacity', 'VARCHAR'), ('dc_id', 'VARCHAR'), ('programtype', 'VARCHAR'), ('facilitytype', 'VARCHAR'), ('childcaretype', 'VARCHAR'), ('bin', 'VARCHAR'), ('url', 'VARCHAR'), ('datepermitted', 'VARCHAR'), ('actual', 'VARCHAR'), ('violationratepercent', 'VARCHAR'), ('violationavgratepercent', 'VARCHAR'), ('totaleducationalworkers', 'VARCHAR'), ('averagetotaleducationalworkers', 'VARCHAR'), ('publichealthhazardviolationrate', 'VARCHAR'), ('averagepublichealthhazardiolationrate', 'VARCHAR'), ('criticalviolationrate', 'VARCHAR'), ('avgcriticalviolationrate', 'VARCHAR'), ('inspectiondate', 'VARCHAR'), ('regulationsummary', 'VARCHAR'), ('violationcategory', 'VARCHAR'), ('healthcodesubsection', 'VARCHAR'), ('violationstatus', 'VARCHAR'), ('inspectionsummaryresult', 'VARCHAR')]
     def rows(self):        
         etl_extraction = ExtractionProcedure(self.year,self.month,self.day)
 
@@ -61,13 +25,14 @@ class LoadCleanInspectionsTask(CopyToTable):
         
         #Ejecutamos los scripts de limpieza
         clean = CleanProcedure(inspections_json_data)
-        rows, columns = clean.execute()
+        rows, cs = clean.execute()
+
         for element in rows:
             yield element
         
         with open('tmp/inserted_vars_clean', 'w') as f:
             if len(inspections_json_data) > 0:
-                f.write(",".join(columns))
+                f.write(",".join(cs))
             else:
                 f.write("")
                 

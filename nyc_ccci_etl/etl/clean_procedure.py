@@ -39,15 +39,15 @@ class CleanProcedure():
             df[col] = df[col].str.replace('ú', 'u')
             df[col] = df[col].str.replace(' ', '_')
         
-        for col in df.select_dtypes('object'):
-            df.loc[df[col] == 'na', col] = ''
-            df.loc[df[col] == 'nan', col] = ''
-        for col in df.select_dtypes('datetime'):
-            df.loc[df[col] == 'na', col] = '9999-99-99'
-            df.loc[df[col] == 'nan', col] = '9999-99-99'
+        # for col in df.select_dtypes('object'):
+        #     df.loc[df[col] == 'na', col] = ''
+        #     df.loc[df[col] == 'nan', col] = ''
+        # for col in df.select_dtypes('datetime'):
+        #     df.loc[df[col] == 'na', col] = '9999-99-99'
+        #     df.loc[df[col] == 'nan', col] = '9999-99-99'
 
-        for col in df.select_dtypes('number'):
-            df.loc[df[col] == np.nan, col] = -1
+        # for col in df.select_dtypes('number'):
+        #     df.loc[df[col] == np.nan, col] = -1
         
         df = df.drop_duplicates()
         return [tuple(x) for x in df.to_numpy()], list(df.columns)
