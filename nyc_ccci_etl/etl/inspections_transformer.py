@@ -18,10 +18,10 @@ class InspectionsTransformer:
     def execute(self):
         df = pd.read_sql_table('inspections', self.engine, schema="clean")
 
-        tabla_4 = df.iloc[:, [4,12,28,29,30,31,32,33]]
+        tabla_4 = df.loc[:, ['borough', 'dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory','healthcodesubsection', 'violationstatus', 'inspectionsummaryresult']]
 
         tabla_4['inspectionsummaryresult'] = tabla_4['inspectionsummaryresult'].astype('str')
-        df_3 = pd.DataFrame(tabla_4.inspectionsummaryresult.str.split('_-_',1).tolist(), columns= ['reason', 'result'])
+        df_3 = pd.DataFrame(tabla_4.inspectionsummaryresult.str.split('___',1).tolist(), columns= ['reason', 'result'])
         df_3['result'] = df_3['result'].astype('str')
         df_4 = pd.DataFrame(df_3.result.str.split(';_',1).tolist(), columns = ['result_1', 'result_2'])
         df_3 = df_3.drop(df_3.columns[[1]], axis=1) 
@@ -34,7 +34,7 @@ class InspectionsTransformer:
         tabla_4.initial_annual_inspection.value_counts(dropna=False)
 
         tabla_4.initial_annual_inspection.value_counts(dropna=False)
-        tabla_4 = tabla_4.drop(['reason'], axis=1) #Eliminamos la variable reason
+        tabla_4.drop(['reason'], axis=1, inplace=True) 
         
         dummies = ["result_1", "result_2"]
         df_2 = pd.get_dummies(tabla_4[dummies])
@@ -42,7 +42,7 @@ class InspectionsTransformer:
         tabla_4 = tabla_4.drop(['result_1', 'result_2'], axis = 1) 
 
         
-        tabla_4['inspectiondate'] = pd.to_datetime(tabla_4.inspectiondate, format = '%Y-%m-%dT00:00:00.000')
+        tabla_4['inspectiondate'] = pd.to_datetime(tabla_4.inspectiondate, format = '%Y_%m_%dT00:00:00.000')
 
         tabla_4['inspection_year'] = tabla_4['inspectiondate'].dt.year
         tabla_4['inspection_month_name'] = tabla_4['inspectiondate'].dt.month_name()
@@ -169,5 +169,4 @@ class InspectionsTransformer:
         tabla_4 = tabla_4.drop(['violation_critical_y','violation_y'], axis=1) #Eliminamos variables que no necesitamos 
         tabla_4.rename(columns={'violation_x':'violation'}, inplace=True)
         tabla_4.rename(columns={'violation_critical_x':'violation_critical'}, inplace=True)
-
-        return [tuple(x) for x in tabla_4.to_numpy()], [(c, 'VARCHAR') for c in list(tabla_4.columns)]
+        return [tuple(x) for x in tabla_4.to_numpy()], [(c, 'VARCHAR') for c in list(tabla_4.columns)]  

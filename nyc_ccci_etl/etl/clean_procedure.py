@@ -38,11 +38,14 @@ class CleanProcedure():
             df[col] = df[col].str.replace('ó', 'o')
             df[col] = df[col].str.replace('ú', 'u')
             df[col] = df[col].str.replace(' ', '_')
+            df[col] = df[col].str.replace('-', '_')
 
-        column_order = ['centername','legalname','building','street','borough','zipcode','phone','permitnumber','permitexp','status','agerange','maximumcapacity','dc_id','programtype','facilitytype','childcaretype','bin','url','datepermitted','actual','violationratepercent','violationavgratepercent','totaleducationalworkers','averagetotaleducationalworkers','publichealthhazardviolationrate','averagepublichealthhazardiolationrate','criticalviolationrate','avgcriticalviolationrate','inspectiondate','regulationsummary','violationcategory','healthcodesubsection','violationstatus','inspectionsummaryresult']
+        for col in df.select_dtypes('object'):
+            df.loc[df[col] == 'na', col] = np.nan
+            df.loc[df[col] == 'n/a', col] = np.nan
 
         df = df.drop_duplicates()
         if len(df) > 0:
-            return [tuple(x) for x in df[column_order].to_numpy()], list(df.columns)
+            return [tuple(x) for x in df.to_numpy()], list(df.columns)
         else:
             return [], ()

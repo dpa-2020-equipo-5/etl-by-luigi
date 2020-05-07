@@ -7,4 +7,4 @@ class ExtractionProcedure():
         self.socrataClient = Socrata("data.cityofnewyork.us", get_app_token()) 
 
     def execute(self):
-        return self.socrataClient.get("dsg6-ifza", inspectiondate=self.date_param)
+        return self.socrataClient.get("dsg6-ifza", limit=5000)#, inspectiondate=self.date_param)

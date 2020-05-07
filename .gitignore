@@ -3,3 +3,5 @@ settings.ini
 __pycache__
 .DS_Store
 *.json
+*.ipynb
+.ipynb_checkpoints
