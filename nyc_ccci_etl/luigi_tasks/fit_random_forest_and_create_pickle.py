@@ -2,7 +2,7 @@ import luigi
 import luigi.contrib.s3
 from nyc_ccci_etl.luigi_tasks.load_transformed_inspections_metadata import LoadTransformedInspectionsMetadata
 from nyc_ccci_etl.luigi_tasks.load_update_centers_metadata import LoadUpdateCentersMetadata
-from nyc_ccci_etl.model.random_forest import RandomForest
+from nyc_ccci_etl.model.nyc_ccci_random_forest import NYCCCCIRandomForest
 import pickle
 class FitRandomForestAndCreatePickle(luigi.Task):
     year = luigi.IntParameter()
@@ -22,7 +22,7 @@ class FitRandomForestAndCreatePickle(luigi.Task):
         return luigi.contrib.s3.S3Target(path=output_path, format=luigi.format.Nop)
 
     def run(self):
-        random_forest = RandomForest()
+        random_forest = NYCCCCIRandomForest()
         result = random_forest.execute()
 
         with self.output().open('w') as output_pickle:
