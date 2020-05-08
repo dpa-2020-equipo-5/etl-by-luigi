@@ -2,32 +2,24 @@ import json
 import luigi
 from luigi.contrib.postgres import CopyToTable
 from datetime import datetime
-from nyc_ccci_etl.etl.extraction_procedure import ExtractionProcedure
+
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from nyc_ccci_etl.utils.get_os_user import get_os_user
 from nyc_ccci_etl.utils.get_current_ip import get_current_ip
 
-from .load_raw_inspections_task import LoadRawInspectionsTask
-class LoadRawInspectionsMetadataTask(CopyToTable):
+from nyc_ccci_etl.luigi_tasks.update_centers import UpdateCenters
+
+
+class LoadUpdateCentersMetadata(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
     def requires(self):
-        return  LoadRawInspectionsTask(self.year, self.month, self.day)
+        return  UpdateCenters(self.year, self.month, self.day)
     
-
-    inserted_vars = ""
-    with open("tmp/inserted_vars") as f:
-        inserted_vars = f.read().strip()
-    
-    inserted_records = ""
-    with open("tmp/inserted_records") as f:
-        inserted_records = f.read().strip()
-
     host, database, user, password = get_database_connection_parameters()
-    table = "raw.metadata"
-    schema = "raw"
-
+    table = "transformed.update_ceenters_metadata"
+    schema = "transformed"
     columns = [ 
         ("executed_at", "timestamp"),
         ("task_params", "varchar"),
@@ -47,14 +39,14 @@ class LoadRawInspectionsMetadataTask(CopyToTable):
         row = (
             str(datetime.now(tz=None)),
             params_string,
-            self.inserted_records,
+            "0",
             get_os_user(),
             get_current_ip(),
             self.database,
             self.schema,
             self.table,
             self.user,
-            self.inserted_vars,
-            "etl"
+            "0",
+            "transormations"
         )
         yield row

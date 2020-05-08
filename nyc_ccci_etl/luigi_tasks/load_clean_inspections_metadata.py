@@ -2,19 +2,18 @@ import json
 import luigi
 from luigi.contrib.postgres import CopyToTable
 from datetime import datetime
-from nyc_ccci_etl.etl.extraction_procedure import ExtractionProcedure
+
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from nyc_ccci_etl.utils.get_os_user import get_os_user
 from nyc_ccci_etl.utils.get_current_ip import get_current_ip
-from random import randint
 
-from .load_clean_inspections_task import LoadCleanInspectionsTask
-class LoadCleanInspectionsMetadataTask(CopyToTable):
+from .load_clean_inspections import LoadCleanInspections
+class LoadCleanInspectionsMetadata(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
     def requires(self):
-        return  LoadCleanInspectionsTask(self.year, self.month, self.day)
+        return  LoadCleanInspections(self.year, self.month, self.day)
     
 
     inserted_vars = ""

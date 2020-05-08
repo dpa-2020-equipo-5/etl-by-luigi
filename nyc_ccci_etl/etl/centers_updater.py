@@ -3,7 +3,7 @@ import numpy as np
 from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 
-class UpdateStaticCenters:
+class CentersUpdater:
     def __init__(self):
         host, database, user, password = get_database_connection_parameters()
         engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
