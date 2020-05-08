@@ -22,8 +22,10 @@ class FitXGBoostAndCreatePickle(luigi.Task):
         return luigi.contrib.s3.S3Target(path=output_path, format=luigi.format.Nop)
 
     def run(self):
-        xg_boost = NYCCCCIXGBoost()
-        result = xg_boost.execute()
+        # xg_boost = NYCCCCIXGBoost()
+        # result = xg_boost.execute()
+        words = ['soy', 'un', 'xg', 'boost']
 
         with self.output().open('w') as output_pickle:
-            pickle.dump(result, output_pickle)
+            pickle.dump(words, output_pickle)
+            #pickle.dump(result, output_pickle)

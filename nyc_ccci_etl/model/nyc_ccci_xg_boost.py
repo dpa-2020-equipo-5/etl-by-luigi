@@ -3,7 +3,7 @@ import numpy as np
 from sqlalchemy import create_engine
 import sklearn as sk
 from sklearn import preprocessing
-from sklearn.ensemble import XGBoost
+#from sklearn.ensemble import XGBoost
 from sklearn import metrics
 from sklearn.metrics import mean_squared_error
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters

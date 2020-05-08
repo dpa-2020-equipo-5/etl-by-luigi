@@ -22,8 +22,10 @@ class FitRandomForestAndCreatePickle(luigi.Task):
         return luigi.contrib.s3.S3Target(path=output_path, format=luigi.format.Nop)
 
     def run(self):
-        random_forest = NYCCCCIRandomForest()
-        result = random_forest.execute()
+        #random_forest = NYCCCCIRandomForest()
+        #result = random_forest.execute()
+        words = ['soy', 'un', 'random', 'forest']
 
         with self.output().open('w') as output_pickle:
-            pickle.dump(result, output_pickle)
+            pickle.dump(words, output_pickle)
+            #pickle.dump(result, output_pickle)
