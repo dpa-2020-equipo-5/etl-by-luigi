@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
-class CleanProcedure():
+class InspectionsCleaner():
     def __init__(self, raw_json_data):
         self.raw_json_data = raw_json_data
 

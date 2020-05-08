@@ -1,1 +1,1 @@
-PYTHONPATH='.' AWS_PROFILE=mathus_itam luigi --module nyc_ccci_etl.luigi_tasks.create_pickle_task CreatePickleTask --year=$1 --month=$2 --day=$3
+PYTHONPATH='.' AWS_PROFILE=mathus_itam luigi --module nyc_ccci_etl.luigi_tasks.model_and_create_pickle_task ModelAndCreatePickleTask --year=$1 --month=$2 --day=$3
