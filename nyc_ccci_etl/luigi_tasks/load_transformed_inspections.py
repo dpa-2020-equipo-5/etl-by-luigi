@@ -2,6 +2,7 @@ import luigi
 from luigi.contrib.postgres import CopyToTable
 
 from nyc_ccci_etl.luigi_tasks.load_clean_inspections_metadata import LoadCleanInspectionsMetadata
+from nyc_ccci_etl.luigi_tasks.load_raw_inspections_metadata import LoadRawInspectionsMetadata
 
 from nyc_ccci_etl.etl.inspections_transformer import InspectionsTransformer
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
@@ -17,7 +18,9 @@ class LoadTransformedInspections(CopyToTable):
     table = "transformed.inspections"
 
     def requires(self):
-        return LoadCleanInspectionsMetadata(self.year, self.month, self.day)
+        return (
+            LoadCleanInspectionsMetadata(self.year, self.month, self.day), LoadRawInspectionsMetadata(self.year, self.month, self.day)
+        )
     
     def run(self):
         transform_inspections = InspectionsTransformer()
