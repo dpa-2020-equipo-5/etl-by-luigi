@@ -3,7 +3,7 @@ from marbles.core.marbles import ContextualAssertionError
 from nyc_ccci_etl.etl.inspections_extractor import InspectionsExtractor
 from datetime import datetime
 from nyc_ccci_etl.utils.is_date_valid import is_date_valid
-from datetime import datetime
+
 def trim(_str):
     return _str.replace('\n', '\t').strip()
     

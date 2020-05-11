@@ -4,7 +4,8 @@ from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 import json
 class InspectionsTransformer:
-    def __init__(self):
+    def __init__(self, year, month, day):
+        self.date_filter = "{}_{}_{}t00:00:00.000".format(str(year).zfill(2), str(month).zfill(2), str(day).zfill(2))
         host, database, user, password = get_database_connection_parameters()
         engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
             user = user,
@@ -16,7 +17,11 @@ class InspectionsTransformer:
         self.engine = create_engine(engine_string)
 
     def execute(self):
-        df = pd.read_sql_table('inspections', self.engine, schema="clean")
+        #esto lo podemos cambiar para que crashee el tests
+        df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
+        
+        #quitar cmoentario para que falle el test
+        #df = pd.read_sql("select * from clean.inspections", self.engine)
 
         tabla_4 = df.loc[:, ['borough', 'dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory','healthcodesubsection', 'violationstatus', 'inspectionsummaryresult']]
 

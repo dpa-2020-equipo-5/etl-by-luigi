@@ -23,7 +23,7 @@ class LoadTransformedInspections(CopyToTable):
         )
     
     def run(self):
-        transform_inspections = InspectionsTransformer()
+        transform_inspections = InspectionsTransformer(self.year, self.month, self.day)
         self._rows, self.columns = transform_inspections.execute()
 
         super().run()
