@@ -15,8 +15,11 @@ class UpdateCenters(CopyToTable):
 
     host, database, user, password = get_database_connection_parameters()
     table = "transformed.centers"
-    centers_updater = CentersUpdater()
-    rs, columns = centers_updater.execute()
+
+    def run(self):
+        centers_updater = CentersUpdater(self.year, self.month, self.day)
+        self.rs, self.columns = centers_updater.execute()
+        super().run()
 
     def rows(self):        
         for element in self.rs:
