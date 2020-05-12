@@ -28,12 +28,3 @@ class LoadCleanInspections(CopyToTable):
     def rows(self):        
         for element in self._rows:
             yield element
-        
-        with open('tmp/inserted_vars_clean', 'w') as f:
-            if len(self._rows) > 0:
-                f.write(",".join(self._columns))
-            else:
-                f.write("")
-                
-        with open('tmp/inserted_records_clean', 'w') as f:
-            f.write(str(len(self._rows)))

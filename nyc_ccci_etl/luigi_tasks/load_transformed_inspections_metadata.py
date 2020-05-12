@@ -8,6 +8,7 @@ from nyc_ccci_etl.utils.get_os_user import get_os_user
 from nyc_ccci_etl.utils.get_current_ip import get_current_ip
 
 from .load_transformed_inspections import LoadTransformedInspections
+from nyc_ccci_etl.metadata_helper.metadata_helper import MetadataHelper
 class LoadTransformedInspectionsMetadata(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
@@ -33,14 +34,9 @@ class LoadTransformedInspectionsMetadata(CopyToTable):
         ("script_tag", "varchar")
     ]
     def run(self):
-        self.inserted_vars = ""
-        with open("tmp/inserted_vars_transformed") as f:
-            self.inserted_vars = f.read().strip()
-        
-        self.inserted_records = ""
-        with open("tmp/inserted_records_transformed") as f:
-            self.inserted_records = f.read().strip()
-
+        helper = MetadataHelper(self.year, self.month, self.day)
+        self.inserted_columns = helper.get_inserted_transformed_columns()
+        self.inserted_record_count = helper.get_inserted_transformed_records()
         super().run()
     
 
@@ -49,14 +45,14 @@ class LoadTransformedInspectionsMetadata(CopyToTable):
         row = (
             str(datetime.now(tz=None)),
             params_string,
-            self.inserted_records,
+            self.inserted_record_count,
             get_os_user(),
             get_current_ip(),
             self.database,
             self.schema,
             self.table,
             self.user,
-            self.inserted_vars,
+            self.inserted_columns,
             "transormations"
         )
         yield row
