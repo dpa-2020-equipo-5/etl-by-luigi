@@ -18,7 +18,7 @@ class LoadUpdateCentersMetadata(CopyToTable):
         return  UpdateCenters(self.year, self.month, self.day)
     
     host, database, user, password = get_database_connection_parameters()
-    table = "transformed.update_ceenters_metadata"
+    table = "transformed.update_centers_metadata"
     schema = "transformed"
     columns = [ 
         ("executed_at", "timestamp"),
