@@ -153,10 +153,11 @@ CREATE TABLE raw.metadata (
 --
 
 CREATE TABLE testing.extractions (
-    ran_at timestamp without time zone,
     test character varying,
+    ran_at timestamp without time zone,
     params character varying,
-    status character varying
+    status character varying,
+    note character varying
 );
 
 
