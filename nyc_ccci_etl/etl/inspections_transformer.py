@@ -18,10 +18,12 @@ class InspectionsTransformer:
         self.engine = create_engine(engine_string)
 
     def execute(self):
-        #esto lo podemos cambiar para que crashee el tests
+        #Comentar para que truene el test
         df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
-        #quitar cmoentario para que falle el test
+
+        #Quitar comentario para que truene el test
         #df = pd.read_sql("select * from clean.inspections", self.engine)
+        
         tabla_4 = df.loc[:, ['dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory', 'healthcodesubsection', 
                      'violationstatus', 'inspectionsummaryresult', 'borough']]
 
@@ -129,5 +131,5 @@ class InspectionsTransformer:
         df_24['ratio_violaciones_2019_criticas'] = df_24['violationcategory_critical'] / df_24['total']
         df_24 = df_24.drop(['violationcategory_critical', 'violationcategory_general', 'violationcategory_public_health_hazard', 'total'], axis = 1)
         tabla_4 = pd.merge(tabla_4, df_24, left_on='center_id', right_on='center_id', how='left')
-
+        self.output_table = tabla_4.copy()
         return [tuple(x) for x in tabla_4.to_numpy()], [(c, 'VARCHAR') for c in list(tabla_4.columns)]  
