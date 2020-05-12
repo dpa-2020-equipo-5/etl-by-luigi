@@ -161,6 +161,19 @@ CREATE TABLE testing.extractions (
 
 
 --
+-- Name: feature_engineering; Type: TABLE; Schema: testing; Owner: -
+--
+
+CREATE TABLE testing.feature_engineering (
+    test character varying,
+    ran_at timestamp without time zone,
+    params character varying,
+    status character varying,
+    note character varying
+);
+
+
+--
 -- Name: centers; Type: TABLE; Schema: transformed; Owner: -
 --
 
@@ -198,7 +211,9 @@ CREATE TABLE transformed.centers (
     borough_brooklyn character varying,
     borough_manhattan character varying,
     borough_queens character varying,
-    borough_staten_island character varying
+    borough_staten_island character varying,
+    programtype_all_age_camp character varying,
+    facilitytype_camp character varying
 );
 
 
@@ -239,7 +254,8 @@ CREATE TABLE transformed.inspections (
     ratio_violaciones_hist_sp character varying,
     ratio_violaciones_2019_sp character varying,
     ratio_violaciones_hist_criticas character varying,
-    ratio_violaciones_2019_criticas character varying
+    ratio_violaciones_2019_criticas character varying,
+    result_1_previously_cited_violations_corrected character varying
 );
 
 
