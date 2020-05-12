@@ -18,7 +18,7 @@ class InspectionsTransformer:
         self.engine = create_engine(engine_string)
 
     def execute(self):
-        df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
+        df = pd.read_sql("select * from clean.inspections", self.engine)
         
         tabla_4 = df.loc[:, ['dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory', 'healthcodesubsection', 
                      'violationstatus', 'inspectionsummaryresult', 'borough']]
