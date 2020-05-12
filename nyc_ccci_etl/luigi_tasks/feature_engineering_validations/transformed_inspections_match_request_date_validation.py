@@ -35,9 +35,9 @@ class TransformedInspectionsMatchRequestDateValidation(CopyToTable):
             print_test_failed(self.test_result['test'], self.test_result['note'])
         else:
             print_test_passed(self.test_result['test'])
-        super().run()
-        if self.test_result['status'] == 'failed':
             sys.exit()
+            
+        super().run()
     
     def rows(self):
         params = "year={} month={} day={}".format(self.year, self.month, self.day)
