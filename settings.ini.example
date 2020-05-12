@@ -6,5 +6,3 @@ host=localhost
 database= database
 user=dbuser
 password=pwd
-schema=dbschema
-table=dbtable
