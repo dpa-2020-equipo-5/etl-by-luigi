@@ -33,6 +33,7 @@ class TestInspectionsExtractor(TestCase):
         result = extractor.execute()
         ran_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
+            self.assertGreater(len(result), 0, note="Debe haber por lo menos 1 inspección")
             self.assertIsInstance(result, list, note="El resulto de la extracción es una lista")
             for item in result:
                 self.assertEqual(str(item)[0], '{', note="El primer caracter de cada elemento de la lista es una llave abierta")
@@ -46,6 +47,7 @@ class TestInspectionsExtractor(TestCase):
         result = extractor.execute()
         ran_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
+            self.assertGreater(len(result), 0, note="Debe haber por lo menos 1 inspección")
             for item in result:
                 self.assertEqual(datetime.strptime(item['inspectiondate'], '%Y-%m-%dT00:00:00.000'), datetime(year, month, day), note="La fecha del request {}-{}-{} == fechainspección {}".format(year, month, day, item['inspectiondate']))
             return {"test":"test_inspection_date_should_match_params_date","status":"passed", "note": "Fecha del rerquest {}-{}-{} == las fechas de todas las inspecciones".format(year, month, day ), "ran_at": ran_at}
