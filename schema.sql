@@ -214,7 +214,9 @@ CREATE TABLE transformed.centers (
     borough_queens character varying,
     borough_staten_island character varying,
     programtype_all_age_camp character varying,
-    facilitytype_camp character varying
+    facilitytype_camp character varying,
+    programtype_school_age_camp character varying,
+    programtype_preschool_camp character varying
 );
 
 
