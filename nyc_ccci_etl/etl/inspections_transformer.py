@@ -19,10 +19,10 @@ class InspectionsTransformer:
 
     def execute(self):
         #Comentar para que truene el test
-        #df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
+        df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
 
         #Quitar comentario para que truene el test
-        df = pd.read_sql("select * from clean.inspections", self.engine)
+        #df = pd.read_sql("select * from clean.inspections", self.engine)
         
         tabla_4 = df.loc[:, ['dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory', 'healthcodesubsection', 
                      'violationstatus', 'inspectionsummaryresult', 'borough']]
