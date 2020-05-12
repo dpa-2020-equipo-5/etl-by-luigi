@@ -27,11 +27,10 @@ class NonEmptyExtractionValidation(CopyToTable):
         self.test_result = test_inspections_extractor.test_extaction_is_not_empty(self.year, self.month, self.day)
         if self.test_result['status'] == 'failed':
             print_test_failed(self.test_result['test'], self.test_result['note'])
+            sys.exit()
         else:
             print_test_passed(self.test_result['test'])
         super().run()
-        if self.test_result['status'] == 'failed':
-            sys.exit()
     
     def rows(self):
         params = "year={} month={} day={}".format(self.year, self.month, self.day)
