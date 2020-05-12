@@ -3,6 +3,7 @@ import numpy as np
 from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 import json
+from datetime import datetime
 class InspectionsTransformer:
     def __init__(self, year, month, day):
         self.date_filter = "{}_{}_{}t00:00:00.000".format(str(year).zfill(2), str(month).zfill(2), str(day).zfill(2))
@@ -63,9 +64,9 @@ class InspectionsTransformer:
         tabla_4 = tabla_4.drop(['violationcategory'], axis = 1) #Eliminamos variables que no necesitamos
         df_6 = tabla_4.loc[tabla_4['inspection_year']!=2020.0]
         df_7 = pd.DataFrame(df_6.groupby(["center_id"], sort=False)["inspectiondate"].max().reset_index())
-        year = str(pd.datetime.now().year)
-        month = str(pd.datetime.now().month)
-        day = str(pd.datetime.now().day)
+        year = str(datetime.now().year)
+        month = str(datetime.now().month)
+        day = str(datetime.now().day)
         fechas = year + "-" + month + "-" + day
         df_7["today"] = pd.to_datetime(fechas)
         df_7['dias_ultima_inspeccion'] = df_7['today'] - df_7['inspectiondate']
