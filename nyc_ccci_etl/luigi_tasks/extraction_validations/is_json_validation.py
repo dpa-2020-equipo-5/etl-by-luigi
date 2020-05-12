@@ -15,10 +15,11 @@ class IsJsonValidation(CopyToTable):
     schema = "testing"
 
     columns = [
-        ('ran_at', 'timestamp'),
         ('test', 'varchar'),
+        ('ran_at', 'timestamp'),
         ('params', 'varchar'),
-        ('status', 'varchar')
+        ('status', 'varchar'),
+        ('note', 'varchar')
     ]
     
     def run(self):
@@ -34,4 +35,4 @@ class IsJsonValidation(CopyToTable):
     
     def rows(self):
         params = "year={} month={} day={}".format(self.year, self.month, self.day)
-        yield (self.test_result['ran_at'], self.test_result['test'], params, self.test_result['status'])
+        yield (self.test_result['test'], self.test_result['ran_at'], params, self.test_result['status'], self.test_result['note'])
