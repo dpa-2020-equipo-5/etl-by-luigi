@@ -26,11 +26,10 @@ class InspectionDatesMatchRequestDateValidation(CopyToTable):
         self.test_result = test_inspections_extractor.test_inspection_date_should_match_params_date(self.year, self.month, self.day)
         if self.test_result['status'] == 'failed':
             print_test_failed(self.test_result['test'], self.test_result['note'])
+            sys.exit()
         else:
             print_test_passed(self.test_result['test'])
         super().run()
-        if self.test_result['status'] == 'failed':
-            sys.exit()
         
         
     def rows(self):
