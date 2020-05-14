@@ -17,8 +17,6 @@ class CentersUpdater:
         self.engine = create_engine(engine_string)
 
     def execute(self):
-        #df = pd.read_sql_table('inspections', self.engine, schema="clean")
-        
         df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
         #Seleccionando las variables estaticas de la tabla limpia
         tabla_3 = df.loc[:, ['centername', 'legalname', 'building', 'street', 'borough', 'zipcode', 'phone', 'permitnumber', 
