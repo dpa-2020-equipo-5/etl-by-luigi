@@ -19,34 +19,44 @@ class InspectionsTransformer:
 
     def execute(self):
         df = pd.read_sql("select * from clean.inspections where inspectiondate='{}'".format(self.date_filter), self.engine)
+        #df = pd.read_sql("select * from clean.inspections", self.engine)
         
-        tabla_4 = df.loc[:, ['dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory', 'healthcodesubsection', 
-                     'violationstatus', 'inspectionsummaryresult', 'borough']]
-
+        tabla_4 = df.loc[:, ['dc_id', 'inspectiondate', 'regulationsummary', 'violationcategory', 'healthcodesubsection', 'violationstatus', 'inspectionsummaryresult', 'borough']]
         tabla_4['inspectionsummaryresult'] = tabla_4['inspectionsummaryresult'].astype('str')
+
+        #Cambia de .split('_-_',1) a split('___',1) porque clean.py reemplaza - por _
         df_2 = pd.DataFrame(tabla_4.inspectionsummaryresult.str.split('___',1).tolist(), columns= ['reason', 'result'])
+        
         df_2['result'] = df_2['result'].astype('str')
         df_3 = pd.DataFrame(df_2.result.str.split(';_',1).tolist(), columns = ['result_1', 'result_2'])
+
         df_2 = df_2.drop(df_2.columns[[1]], axis=1) 
         df_2 = df_2.join(df_3)
         tabla_4 = tabla_4.join(df_2)
         tabla_4 = tabla_4.drop(['inspectionsummaryresult'], axis = 1) #Eliminar inspection_summary_result
         tabla_4.reason.value_counts(dropna=False)
         tabla_4 = tabla_4.loc[tabla_4['reason'] == 'initial_annual_inspection']
+        tabla_4['result_2'] = tabla_4['result_2'].fillna('NR')
+        
         categorias = ["result_1", "result_2"]
         df_4 = pd.get_dummies(tabla_4[categorias])
         tabla_4 = tabla_4.join(df_4)
         tabla_4 = tabla_4.drop(['result_1', 'result_2'], axis = 1) #Eliminamos variables que no necesitamos
         tabla_4['inspectiondate'] = tabla_4['inspectiondate'].astype('str')
         tabla_4['inspectiondate'] = pd.to_datetime(tabla_4.inspectiondate, infer_datetime_format=False, format='%Y_%m_%dt00:00:00.000')
+        
         tabla_4['inspection_year'] = tabla_4['inspectiondate'].dt.year
         tabla_4['inspection_month'] = tabla_4['inspectiondate'].dt.month
         tabla_4['inspection_day_name'] = tabla_4['inspectiondate'].dt.day_name()
+        
         tabla_4 = tabla_4.drop(tabla_4.loc[tabla_4['inspection_day_name']== 'Saturday'].index)
         tabla_4 = tabla_4.drop(tabla_4.loc[tabla_4['inspection_day_name']== 'Sunday'].index)
+
         dias = {"Monday":'1', "Tuesday":'2', "Wednesday":'3', "Thursday":'4',"Friday":'5'}
+        
         tabla_4['inspection_day_name'] = tabla_4['inspection_day_name'].map(dias)
-        tabla_4['inspection_day_name'] = tabla_4['inspection_day_name'].astype('float')
+        tabla_4['inspection_day_name'] = tabla_4['inspection_day_name'].astype(float)
+        
         tabla_4.rename(columns={'dc_id':'center_id'}, inplace=True)
         tabla_4.sort_values(['inspectiondate'], ascending=[False], inplace=True)
         categorias = ["violationcategory"]
@@ -61,25 +71,33 @@ class InspectionsTransformer:
         tabla_4 = tabla_4.drop(['violationcategory'], axis = 1) #Eliminamos variables que no necesitamos
         df_6 = tabla_4.loc[tabla_4['inspection_year']!=2020.0]
         df_7 = pd.DataFrame(df_6.groupby(["center_id"], sort=False)["inspectiondate"].max().reset_index())
+        
         year = str(datetime.now().year)
         month = str(datetime.now().month)
         day = str(datetime.now().day)
+        
         fechas = year + "-" + month + "-" + day
+        
         df_7["today"] = pd.to_datetime(fechas)
         df_7['dias_ultima_inspeccion'] = df_7['today'] - df_7['inspectiondate']
         df_7['dias_ultima_inspeccion'] = df_7['dias_ultima_inspeccion'].dt.days
         tabla_4 = pd.merge(tabla_4, df_7, left_on='center_id', right_on='center_id', how='left')
         tabla_4 =  tabla_4.rename(columns = {'inspectiondate_x':'inspectiondate'})
         tabla_4 = tabla_4.drop(['today', 'inspectiondate_y'], axis = 1)
+        
         df_8 = pd.DataFrame(df_6.groupby(["center_id"], sort=False)["violationcategory_public_health_hazard"].sum().reset_index())
         df_8 =  df_8.rename(columns = {'violationcategory_public_health_hazard':'violaciones_hist_salud_publica'})
         tabla_4 = pd.merge(tabla_4, df_8, left_on='center_id', right_on='center_id', how='left')
+        
         df_9 = tabla_4.loc[tabla_4['inspection_year']==2019.0]
+        
         df_10 = pd.DataFrame(df_9.groupby(["center_id"], sort=False)["violationcategory_public_health_hazard"].sum().reset_index())
         df_10 =  df_10.rename(columns = {'violationcategory_public_health_hazard':'violaciones_2019_salud_publica'})
         tabla_4 = pd.merge(tabla_4, df_10, left_on='center_id', right_on='center_id', how='left')
+        
         df_11 = pd.DataFrame(df_6.groupby(["center_id"], sort=False)["violationcategory_critical"].sum().reset_index())
         df_11 =  df_11.rename(columns = {'violationcategory_critical':'violaciones_hist_criticas'})
+        
         tabla_4 = pd.merge(tabla_4, df_11, left_on='center_id', right_on='center_id', how='left')
         df_12 = pd.DataFrame(df_9.groupby(["center_id"], sort=False)["violationcategory_critical"].sum().reset_index())
         df_12 =  df_12.rename(columns = {'violationcategory_critical':'violaciones_2019_criticas'})
