@@ -18,25 +18,25 @@ class MetadataHelper:
         self.engine = create_engine(engine_string)
 
     def get_inserted_raw_records(self):
-        df = pd.read_sql("select count(*) from raw.inspections where inspection->>'inspectiondate' = '{}';".format(self.date_filter), self.engine)
+        df = pd.read_sql("select count(*) from raw.inspections", self.engine)
         return df['count'].values[0]
         
     def get_inserted_raw_columns(self):
-        df = pd.read_sql("select * from raw.inspections where inspection->>'inspectiondate' = '{}' limit 1;".format(self.date_filter), self.engine)
+        df = pd.read_sql("select * from raw.inspections limit 1;", self.engine)
         return ",".join(df['inspection'].values[0].keys())
 
     def get_inserted_clean_records(self):
-        df = pd.read_sql("select count(*) from clean.inspections where inspectiondate= '{}';".format(self.date_filter_clean), self.engine)
+        df = pd.read_sql("select count(*) from clean.inspections;", self.engine)
         return df['count'].values[0]
         
     def get_inserted_clean_columns(self):
-        df = pd.read_sql("select * from clean.inspections where inspectiondate= '{}' limit 1;".format(self.date_filter_clean), self.engine)
+        df = pd.read_sql("select * from clean.inspections limit 1;", self.engine)
         return ",".join(df.columns)
     
     def get_inserted_transformed_records(self):
-        df = pd.read_sql("select count(*) from transformed.inspections where inspectiondate= '{}';".format(self.date_filter_transformed), self.engine)
+        df = pd.read_sql("select count(*) from transformed.inspections;", self.engine)
         return df['count'].values[0]
         
     def get_inserted_transformed_columns(self):
-        df = pd.read_sql("select * from transformed.inspections where inspectiondate= '{}' limit 1;".format(self.date_filter_transformed), self.engine)
+        df = pd.read_sql("select * from transformed.inspections limit 1;", self.engine)
         return ",".join(df.columns)

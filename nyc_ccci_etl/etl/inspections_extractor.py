@@ -9,5 +9,4 @@ class InspectionsExtractor:
         self.socrataClient = Socrata("data.cityofnewyork.us", get_app_token()) 
 
     def execute(self):
-        #return self.socrataClient.get("dsg6-ifza",  where="inspectiondate < '2020-03-01T00:00:00.000'", limit=60000)
-        return self.socrataClient.get("dsg6-ifza", inspectiondate=self.date_param)
+        return self.socrataClient.get("dsg6-ifza",  where="inspectiondate <= '{}'".format(self.date_param), limit=60000)
