@@ -1,31 +1,61 @@
 import pandas as pd
 import numpy as np
-from sqlalchemy import create_engine
-import sklearn as sk
-from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
-from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV
+
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 
+from sklearn.model_selection import train_test_split
+
 class NYCCCCIRandomForest:
-    def execute(self):
-        host, database, user, password = get_database_connection_parameters()
-        engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
-            user = user,
-            password = password,
-            host = host,
-            port = 5432,
-            database = database,
-        )
-        engine = create_engine(engine_string)
-        tabla_3 = pd.read_sql_table('centers', engine, schema="transformed")
-        tabla_4 = pd.read_sql_table('inspections', engine, schema="transformed")
+    # def __init__(self, _x_train, _y_train, _x_test, _y_test):
+    #     self.X_train = _x_train
+    #     self.Y_train = _y_train
+    #     self.X_test = _x_test
+    #     self.Y_test = _y_test
+    def __init__(self, _x, _y):
+        self.X = _x
+        self.y = _y
 
+    def fit(self):
+        #X_train, X_test, y_train, y_test = train_test_split(self.X, self.y)
 
-        return "MODELO BONITO YA AJUSTADO"
-        '''
-        rforest = RandomForestClassifier(n_estimators=600, class_weight="balanced", max_depth=8, criterion='gini')
-        rforest.fit(X_train,Y_train.values.ravel())
-        return rforst
-        '''
+        rforest = RandomForestClassifier()
+
+        hyper_param_grid = {
+            'n_estimators': [100,1000,5000], 
+            'max_depth': [1,5,10,20], 
+            'criterion':['gini'],
+            'class_weight':["balanced"],
+            'bootstrap':[True],
+        }
+        print("Setting grid params")
+
+        grid_search = GridSearchCV(
+            rforest, 
+            hyper_param_grid, 
+            scoring = 'f1',
+            cv = 10, 
+            n_jobs = -1,
+            verbose = 3)
+        print("Beginging grid search")
+        grid_search.fit(self.X, self.y.ravel())
+
+        print("="*100)
+        print("best_params: ")
+        print(grid_search.best_params_)
+
+        print("="*100)
+        print("best_score: ")
+        print(grid_search.best_score_)
+
+        
+        cv_results = pd.DataFrame(grid_search.cv_results_)
+        print("="*100)
+        print("cv_results: ")
+        print(cv_results.head())
+
+        results = cv_results.sort_values(by='rank_test_score', ascending=True).head()
+        print("="*100)
+        print(results.iloc[0,:].params)
