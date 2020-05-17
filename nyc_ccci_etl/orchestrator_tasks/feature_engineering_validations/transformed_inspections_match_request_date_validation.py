@@ -4,8 +4,8 @@ from nyc_ccci_etl.tests.test_feature_engineering import TestFeatureEngineering
 from nyc_ccci_etl.utils.print_with_format import print_test_failed, print_test_passed
 import sys
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
-from nyc_ccci_etl.luigi_tasks.load_clean_inspections_metadata import LoadCleanInspectionsMetadata
-from nyc_ccci_etl.luigi_tasks.load_raw_inspections_metadata import LoadRawInspectionsMetadata
+from nyc_ccci_etl.orchestrator_tasks.load_clean_inspections_metadata import LoadCleanInspectionsMetadata
+from nyc_ccci_etl.orchestrator_tasks.load_raw_inspections_metadata import LoadRawInspectionsMetadata
 class TransformedInspectionsMatchRequestDateValidation(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
