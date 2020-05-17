@@ -1,7 +1,7 @@
 import luigi
 from luigi.contrib.postgres import CopyToTable
 
-from nyc_ccci_etl.luigi_tasks.feature_engineering_validation_metadata import FeatureEngineeringValidationMetadata
+from nyc_ccci_etl.orchestrator_tasks.feature_engineering_validation_metadata import FeatureEngineeringValidationMetadata
 
 from nyc_ccci_etl.etl.inspections_transformer import InspectionsTransformer
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters

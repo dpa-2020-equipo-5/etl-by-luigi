@@ -33,7 +33,7 @@ class RandomForestGridSearch:
             n_jobs = -1,
             verbose = 3)
 
-        grid_search.fit(X, y.ravel())
+        grid_search.fit(X, y.values.ravel())
 
         print("="*100)
         print("best_params: ")
@@ -53,4 +53,4 @@ class RandomForestGridSearch:
         print("="*100)
         print(results.iloc[0,:].params)
 
-        return grid_search.best_params_
+        return grid_search.best_params_, grid_search.best_score_

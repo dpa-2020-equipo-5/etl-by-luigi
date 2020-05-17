@@ -4,7 +4,7 @@ from luigi.contrib.postgres import CopyToTable
 
 from nyc_ccci_etl.etl.inspections_extractor import InspectionsExtractor
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
-from nyc_ccci_etl.luigi_tasks.extraction_validation_metadata import ExtractionValidationMetadata
+from nyc_ccci_etl.orchestrator_tasks.extraction_validation_metadata import ExtractionValidationMetadata
 class LoadRawInspections(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()

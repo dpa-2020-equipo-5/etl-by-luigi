@@ -7,7 +7,7 @@ from nyc_ccci_etl.commons.configuration import get_database_connection_parameter
 from nyc_ccci_etl.utils.get_os_user import get_os_user
 from nyc_ccci_etl.utils.get_current_ip import get_current_ip
 
-from nyc_ccci_etl.luigi_tasks.update_centers import UpdateCenters
+from nyc_ccci_etl.orchestrator_tasks.update_centers import UpdateCenters
 
 
 class LoadUpdateCentersMetadata(CopyToTable):

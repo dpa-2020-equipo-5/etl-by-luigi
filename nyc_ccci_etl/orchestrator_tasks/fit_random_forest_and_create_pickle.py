@@ -1,10 +1,9 @@
 import luigi
 import luigi.contrib.s3
-from nyc_ccci_etl.luigi_tasks.load_transformed_inspections_metadata import LoadTransformedInspectionsMetadata
-from nyc_ccci_etl.luigi_tasks.load_update_centers_metadata import LoadUpdateCentersMetadata
+
 from nyc_ccci_etl.model.nyc_ccci_random_forest import NYCCCCIRandomForest
 import pickle
-from nyc_ccci_etl.luigi_tasks.model_grid_search import ModelGridSearch
+from nyc_ccci_etl.orchestrator_tasks.model_metadata import ModelMetadata
 class FitRandomForestAndCreatePickle(luigi.Task):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
@@ -12,7 +11,7 @@ class FitRandomForestAndCreatePickle(luigi.Task):
     
 
     def requires(self):
-        return ModelGridSearch(self.year, self.month, self.day), LoadTransformedInspectionsMetadata(self.year, self.month, self.day), LoadUpdateCentersMetadata(self.year, self.month, self.day)
+        return ModelMetadata(self.year, self.month, self.day) 
 
     def output(self):
         output_path = "s3://nyc-ccci/random_forest_{}_{}_{}.pckl".\
@@ -24,7 +23,7 @@ class FitRandomForestAndCreatePickle(luigi.Task):
         return luigi.contrib.s3.S3Target(path=output_path, format=luigi.format.Nop)
 
     def run(self):
-        random_forest = NYCCCCIRandomForest()
+        random_forest = NYCCCCIRandomForest(self.year, self.month, self.day)
         result = random_forest.fit()
 
         with self.output().open('w') as output_pickle:
