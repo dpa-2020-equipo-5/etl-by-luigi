@@ -8,3 +8,5 @@ __pycache__
 cli.py
 loopy.sh
 settiings.ini.local
+settiings.ini
+settings.ini.other
