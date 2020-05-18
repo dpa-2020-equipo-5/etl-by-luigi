@@ -10,3 +10,4 @@ loopy.sh
 settiings.ini.local
 settiings.ini
 settings.ini.other
+*.pckl
