@@ -40,3 +40,7 @@ class MetadataHelper:
     def get_inserted_transformed_columns(self):
         df = pd.read_sql("select * from transformed.inspections where inspectiondate= '{}' limit 1;".format(self.date_filter_transformed), self.engine)
         return ",".join(df.columns)
+
+    def get_inserted_predictions(self):
+        df = pd.read_sql("select count(*) from predictions.predictions where date= '{}';".format(self.date_filter_transformed), self.engine)
+        return df['count'].values[0]
