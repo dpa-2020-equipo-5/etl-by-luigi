@@ -1,1 +1,1 @@
-PYTHONPATH='.' AWS_PROFILE=default luigi --log-level=INFO --module nyc_ccci_etl.orchestrator_tasks.models_creator ModelsCreator --year=$1 --month=$2 --day=$3
+PYTHONPATH='.' AWS_PROFILE=default luigi --log-level=INFO --module nyc_ccci_etl.orchestrator_tasks.pipeline_root PipelineRoot --pipeline-type=$1 --year=$2 --month=$3 --day=$4
