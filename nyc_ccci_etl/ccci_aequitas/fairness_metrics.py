@@ -26,7 +26,7 @@ class FairnessMetrics:
         latest = max(all_models, key=lambda x: x['LastModified'])
         return latest['Key']
     def download_model(self):
-        ses = boto3.session.Session(profile_name='mathus_itam', region_name='us-east-1')
+        ses = boto3.session.Session(profile_name='default', region_name='us-east-1')
         latest_model = self.get_lastest_model(ses)
         self.model_id = "s3://nyc-ccci/" + latest_model
         s3_resource = ses.resource('s3')

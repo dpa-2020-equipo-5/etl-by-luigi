@@ -33,7 +33,7 @@ class PredictionsColumnsValidation(CopyToTable):
         return latest['Key']
 
     def run(self):
-        ses = boto3.session.Session(profile_name='mathus_itam', region_name='us-east-1')
+        ses = boto3.session.Session(profile_name='default', region_name='us-east-1')
         latest_model = self.get_lastest_model(ses)
         s3_resource = ses.resource('s3')
         with BytesIO() as data:
