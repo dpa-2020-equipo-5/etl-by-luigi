@@ -45,8 +45,9 @@ class DataPreparator:
 
         tabla_5 = tabla_5.fillna(0)
 
-        df_train = tabla_5.loc[tabla_5['inspection_year'] != 2020.0]
-        df_test = tabla_5.loc[tabla_5['inspection_year'] == 2020.0]
+        df_train = tabla_5.loc[(tabla_5['inspection_year'] <= 2019.0) & (tabla_5['inspection_month'] <= 11.0)]
+        df_test = tabla_5.loc[(tabla_5['inspection_year'] == 2019.0) & (tabla_5['inspection_month'] == 12.0)]
+
         Y_train = df_train[['violationcategory_public_health_hazard']]
         Y_test = df_test[['violationcategory_public_health_hazard']]
         X_train = df_train[[i for i in df_train.keys() if i not in Y_train]]
