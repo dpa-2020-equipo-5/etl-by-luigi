@@ -3,9 +3,10 @@ import boto3
 from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from aequitas.group import Group
+from aequitas.fairness import Fairness
 from io import BytesIO
 import pickle
-class GroupMetrics:
+class FairnessMetrics:
     def __init__(self, year, month, day):
         host, database, user, password = get_database_connection_parameters()
         self.date_param = "{}-{}-{}".format(year, str(month).zfill(2), str(day).zfill(2))
@@ -63,9 +64,9 @@ class GroupMetrics:
         for col in tabla_5.select_dtypes(object):
             tabla_5[col] = tabla_5[col].astype(float)
 
-        tabla_5 = tabla_5.fillna(0)
-        prds = model.predict(tabla_5.drop(['violationcategory_public_health_hazard'],axis=1))
+        tabla_5 = tabla_5.fillna(0)  
 
+        prds = model.predict(tabla_5.drop(['violationcategory_public_health_hazard'],axis=1))
         probas = model.predict_proba(tabla_5.drop(['violationcategory_public_health_hazard'],axis=1))
 
         res = pd.DataFrame({
@@ -79,31 +80,60 @@ class GroupMetrics:
         res.loc[res['proba_0'] < res['proba_1'], 'score'] = res['proba_1']
 
         categorias_1 = ["programtype_all_age_camp","programtype_infant_toddler","programtype_preschool", "programtype_preschool_camp", "programtype_school_age_camp"]
-
         programtype = pd.get_dummies(centros[categorias_1]).idxmax(1)
-
         categorias_2 = ["borough_bronx","borough_brooklyn","borough_manhattan", "borough_queens", "borough_staten_island"]
-
         borough = pd.get_dummies(centros[categorias_2]).idxmax(1)
-
         ambas = pd.concat([borough, programtype], axis=1,)
-
         ambas = ambas.rename(columns={0:'borough', 1:'programtype'})
+        tabla_1 = pd.concat([centros, ambas], axis=1)
+        tabla_2 = pd.merge(res, tabla_1, left_on='center', right_on='center_id')
 
-        centros = pd.concat([centros, ambas], axis=1)
+        for i in list(tabla_2.index):
+            if str(tabla_2.iloc[i].borough_bronx) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "bronx"
+            elif str(tabla_2.iloc[i].borough_brooklyn) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "brooklyn"
+            elif str(tabla_2.iloc[i].borough_manhattan) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "manhattan"
+            elif str(tabla_2.iloc[i].borough_queens) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "queens"
+            elif str(tabla_2.iloc[i].borough_staten_island) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "staten_island"
 
-        tabla = pd.merge(res, centros, left_on='center', right_on='center_id')
+        tabla_2.drop(categorias_2, axis=1, inplace=True)
 
-        tabla = tabla.loc[:, ['center', 'etiqueta', 'score', 'borough', 'programtype']]
+        for i in list(tabla_2.index):
+            if str(tabla_2.iloc[i].programtype_all_age_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "all_age_camp"
+            elif str(tabla_2.iloc[i].programtype_infant_toddler) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "infant_toddler"
+            elif str(tabla_2.iloc[i].programtype_preschool) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "preschool"
+            elif str(tabla_2.iloc[i].programtype_preschool_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "preschool_camp"
+            elif str(tabla_2.iloc[i].programtype_school_age_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "school_age_camp"
 
-        tabla =  tabla.rename(columns = {'etiqueta':'label_value'})
+        tabla_2.drop(categorias_1, axis=1, inplace=True)
 
-        tabla = tabla.set_index(['center'])
+        tabla_6 = tabla_2.loc[:, ['center', 'etiqueta', 'score', 'borough', 'programtype']]
+        tabla_6 =  tabla_6.rename(columns = {'etiqueta':'label_value'})
+        tabla_6.set_index('center', inplace=True)
+
         g = Group()
-        xtab, _ = g.get_crosstabs(tabla)
+
+        xtab, _ = g.get_crosstabs(tabla_6)
+
         absolute_metrics = g.list_absolute_metrics(xtab)
+
         df_group = xtab[[col for col in xtab.columns if col not in absolute_metrics]]
-        df_group['model_id'] = self.model_id
-        df_group['date'] = self.date_param
-        self.output_table = df_group
-        return [tuple(x) for x in df_group.to_numpy()], [(c, 'VARCHAR') for c in list(df_group.columns)]  
+        df_group.head()
+
+        f = Fairness()
+        fdf = f.get_group_value_fairness(bdf)
+
+
+        fdf['model_id'] = self.model_id
+        fdf['date'] = self.date_param
+        self.output_table = fdf
+        return [tuple(x) for x in fdf.to_numpy()], [(c, 'VARCHAR') for c in list(fdf.columns)]  

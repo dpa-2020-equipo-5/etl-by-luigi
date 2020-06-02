@@ -17,8 +17,8 @@ class LoadBiasFairnessMetadata(luigi.Task):
     def requires(self):
         return (
             LoadAequitasGroups(self.year, self.month, self.day),
-            # LoadAequitasBias(self.year, self.month, self.day),
-            # LoadAequitasFairness(self.year, self.month, self.day)
+            LoadAequitasBias(self.year, self.month, self.day),
+            LoadAequitasFairness(self.year, self.month, self.day)
         )
 
     def run(self):

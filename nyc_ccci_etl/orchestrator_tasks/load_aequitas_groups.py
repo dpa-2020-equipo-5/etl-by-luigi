@@ -18,7 +18,7 @@ class LoadAequitasGroups(CopyToTable):
     table = "aequitas.groups"
     schema = "aequitas"
     def run(self):
-        g = GroupMetrics()
+        g = GroupMetrics(self.year, self.month, self.day)
         self._rows,self.columns = g.execeute()
         super().run()
     

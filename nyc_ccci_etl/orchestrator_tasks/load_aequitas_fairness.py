@@ -5,6 +5,8 @@ from luigi.contrib.postgres import CopyToTable
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from nyc_ccci_etl.orchestrator_tasks.fit_random_forest_and_create_pickle import FitRandomForestAndCreatePickle
 
+from nyc_ccci_etl.ccci_aequitas.fairness_metrics import FairnessMetrics
+
 
 class LoadAequitasFairness(CopyToTable):
     year = luigi.IntParameter()
@@ -17,9 +19,11 @@ class LoadAequitasFairness(CopyToTable):
     table = "aequitas.fairness"
     schema = "aequitas"
     def run(self):
-        self.columns = []
+        f = FairnessMetrics(self.year, self.month, self.day)
+        self._rows, self.columns = f.execeute()
         super().run()
     
 
     def rows(self):
-        yield ('', '')
+        for element in self._rows:
+            yield element
