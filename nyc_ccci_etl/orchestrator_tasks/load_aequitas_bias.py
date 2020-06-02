@@ -13,8 +13,10 @@ class LoadAequitasBias(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
+    pipeline_type = luigi.Parameter()
     def requires(self):
-        return FitRandomForestAndCreatePickle(self.year, self.month, self.day)
+        if (str(self.pipeline_type) == 'train'):
+            return FitRandomForestAndCreatePickle(self.year, self.month, self.day)
         
     host, database, user, password = get_database_connection_parameters()
     table = "aequitas.bias"

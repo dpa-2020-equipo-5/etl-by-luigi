@@ -17,13 +17,13 @@ class LoadBiasFairnessMetadata(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
-    
+    pipeline_type = luigi.Parameter()
     
     def requires(self):
         return (
-            LoadAequitasGroups(self.year, self.month, self.day),
-            LoadAequitasBias(self.year, self.month, self.day),
-            LoadAequitasFairness(self.year, self.month, self.day)
+            LoadAequitasGroups(self.year, self.month, self.day, self.pipeline_type),
+            LoadAequitasBias(self.year, self.month, self.day, self.pipeline_type),
+            LoadAequitasFairness(self.year, self.month, self.day, self.pipeline_type)
         )
 
     host, database, user, password = get_database_connection_parameters()

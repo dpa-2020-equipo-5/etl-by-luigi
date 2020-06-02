@@ -16,9 +16,9 @@ class PipelineRoot(CopyToTable):
 
     def requires(self):
         if str(self.pipeline_type) == 'train':
-            return  LoadBiasFairnessMetadata(self.year, self.month, self.day)
+            return  LoadBiasFairnessMetadata(self.year, self.month, self.day, self.pipeline_type)
         elif str(self.pipeline_type) == 'predict':
-            return LoadPredictionsMetadata(self.year, self.month, self.day)
+            return LoadPredictionsMetadata(self.year, self.month, self.day, self.pipeline_type)
         elif str(self.pipeline_type) == 'load':
             return (
                 LoadTransformedInspectionsMetadata(self.year, self.month, self.day),

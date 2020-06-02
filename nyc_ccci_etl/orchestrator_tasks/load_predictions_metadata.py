@@ -14,6 +14,7 @@ class LoadPredictionsMetadata(CopyToTable):
     year = luigi.IntParameter()
     month = luigi.IntParameter()
     day = luigi.IntParameter()
+    pipeline_type=luigi.Parameter()
     matrix_uuid =  str(uuid.uuid4())
     def requires(self):
         return  CreatePredictions(self.year, self.month, self.day, self.matrix_uuid)

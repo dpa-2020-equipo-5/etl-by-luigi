@@ -2,6 +2,7 @@ import luigi
 from luigi.contrib.postgres import CopyToTable
 from nyc_ccci_etl.orchestrator_tasks.feature_engineering_validation_metadata import FeatureEngineeringValidationMetadata
 from nyc_ccci_etl.orchestrator_tasks.predictions_validation_metadata import PredictionsValidationMetadata
+from nyc_ccci_etl.orchestrator_tasks.load_bias_fairness_metadata import LoadBiasFairnessMetadata
 from nyc_ccci_etl.predict.predictions_creator import PredictionsCreator
 import boto3
 import pickle
@@ -14,7 +15,11 @@ class CreatePredictions(CopyToTable):
     matrix_uuid = luigi.Parameter()
 
     def requires(self):
-        return FeatureEngineeringValidationMetadata(self.year, self.month, self.day), PredictionsValidationMetadata(self.year, self.month, self.day, self.matrix_uuid)
+        return (
+            FeatureEngineeringValidationMetadata(self.year, self.month, self.day), 
+            LoadBiasFairnessMetadata(self.year, self.month, self.day), 
+            PredictionsValidationMetadata(self.year, self.month, self.day, self.matrix_uuid)
+        )
 
     host, database, user, password = get_database_connection_parameters()
     table = "predictions.predictions"
