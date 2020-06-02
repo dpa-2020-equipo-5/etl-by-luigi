@@ -13,12 +13,11 @@ class CreatePredictions(CopyToTable):
     month = luigi.IntParameter()
     day = luigi.IntParameter()
     matrix_uuid = luigi.Parameter()
-
+    pipeline_type=luigi.Parameter()
     def requires(self):
         return (
-            FeatureEngineeringValidationMetadata(self.year, self.month, self.day), 
-            LoadBiasFairnessMetadata(self.year, self.month, self.day), 
-            PredictionsValidationMetadata(self.year, self.month, self.day, self.matrix_uuid)
+            
+            PredictionsValidationMetadata(self.year, self.month, self.day, self.matrix_uuid, self.pipeline_type)
         )
 
     host, database, user, password = get_database_connection_parameters()
