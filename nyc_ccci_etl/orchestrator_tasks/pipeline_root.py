@@ -1,7 +1,7 @@
 import luigi
 from luigi.contrib.postgres import CopyToTable
 
-from nyc_ccci_etl.orchestrator_tasks.fit_random_forest_and_create_pickle import FitRandomForestAndCreatePickle
+from nyc_ccci_etl.orchestrator_tasks.load_bias_fairness_metadata import LoadBiasFairnessMetadata
 from nyc_ccci_etl.orchestrator_tasks.load_predictions_metadata import LoadPredictionsMetadata
 from nyc_ccci_etl.orchestrator_tasks.load_transformed_inspections_metadata import LoadTransformedInspectionsMetadata
 from nyc_ccci_etl.orchestrator_tasks.load_update_centers_metadata import LoadUpdateCentersMetadata
@@ -16,7 +16,7 @@ class PipelineRoot(CopyToTable):
 
     def requires(self):
         if str(self.pipeline_type) == 'train':
-            return  FitRandomForestAndCreatePickle(self.year, self.month, self.day)
+            return  LoadBiasFairnessMetadata(self.year, self.month, self.day)
         elif str(self.pipeline_type) == 'predict':
             return LoadPredictionsMetadata(self.year, self.month, self.day)
         elif str(self.pipeline_type) == 'load':
