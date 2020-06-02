@@ -15,7 +15,7 @@ class LoadAequitasGroups(CopyToTable):
         return FitRandomForestAndCreatePickle(self.year, self.month, self.day)
         
     host, database, user, password = get_database_connection_parameters()
-    table = "aequitas.fairness"
+    table = "aequitas.groups"
     schema = "aequitas"
     def run(self):
         g = GroupMetrics()

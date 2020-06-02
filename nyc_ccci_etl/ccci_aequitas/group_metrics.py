@@ -3,6 +3,8 @@ import boto3
 from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from aequitas.group import Group
+from io import BytesIO
+import pickle
 class GroupMetrics:
     def __init__(self):
         host, database, user, password = get_database_connection_parameters()
@@ -14,9 +16,16 @@ class GroupMetrics:
             database = database,
         )
         self.engine = create_engine(engine_string)
+    def get_lastest_model(self, session):
+        s3_client = session.client('s3')
+        response = s3_client.list_objects_v2(Bucket='nyc-ccci')
+        all_models = response['Contents']
+        latest = max(all_models, key=lambda x: x['LastModified'])
+        return latest['Key']
     def download_model(self):
         ses = boto3.session.Session(profile_name='mathus_itam', region_name='us-east-1')
         latest_model = self.get_lastest_model(ses)
+        self.model_id = "s3://nyc-ccci/" + latest_model
         s3_resource = ses.resource('s3')
         with BytesIO() as data:
             s3_resource.Bucket("nyc-ccci").download_fileobj(latest_model, data)
@@ -93,5 +102,6 @@ class GroupMetrics:
         xtab, _ = g.get_crosstabs(tabla)
         absolute_metrics = g.list_absolute_metrics(xtab)
         df_group = xtab[[col for col in xtab.columns if col not in absolute_metrics]]
+        df_group['model_id'] = self.model_id
         self.output_table = df_group
         return [tuple(x) for x in df_group.to_numpy()], [(c, 'VARCHAR') for c in list(df_group.columns)]  
