@@ -79,28 +79,49 @@ class GroupMetrics:
         res.loc[res['proba_0'] < res['proba_1'], 'score'] = res['proba_1']
 
         categorias_1 = ["programtype_all_age_camp","programtype_infant_toddler","programtype_preschool", "programtype_preschool_camp", "programtype_school_age_camp"]
-
         programtype = pd.get_dummies(centros[categorias_1]).idxmax(1)
-
         categorias_2 = ["borough_bronx","borough_brooklyn","borough_manhattan", "borough_queens", "borough_staten_island"]
-
         borough = pd.get_dummies(centros[categorias_2]).idxmax(1)
-
         ambas = pd.concat([borough, programtype], axis=1,)
-
         ambas = ambas.rename(columns={0:'borough', 1:'programtype'})
+        tabla_1 = pd.concat([centros, ambas], axis=1)
+        tabla_2 = pd.merge(res, tabla_1, left_on='center', right_on='center_id')
 
-        centros = pd.concat([centros, ambas], axis=1)
+        for i in list(tabla_2.index):
+            if str(tabla_2.iloc[i].borough_bronx) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "bronx"
+            elif str(tabla_2.iloc[i].borough_brooklyn) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "brooklyn"
+            elif str(tabla_2.iloc[i].borough_manhattan) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "manhattan"
+            elif str(tabla_2.iloc[i].borough_queens) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "queens"
+            elif str(tabla_2.iloc[i].borough_staten_island) == "1":
+                tabla_2.loc[tabla_2.index == i ,"borough"] = "staten_island"
 
-        tabla = pd.merge(res, centros, left_on='center', right_on='center_id')
+        tabla_2.drop(categorias_2, axis=1, inplace=True)
 
-        tabla = tabla.loc[:, ['center', 'etiqueta', 'score', 'borough', 'programtype']]
+        for i in list(tabla_2.index):
+            if str(tabla_2.iloc[i].programtype_all_age_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "all_age_camp"
+            elif str(tabla_2.iloc[i].programtype_infant_toddler) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "infant_toddler"
+            elif str(tabla_2.iloc[i].programtype_preschool) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "preschool"
+            elif str(tabla_2.iloc[i].programtype_preschool_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "preschool_camp"
+            elif str(tabla_2.iloc[i].programtype_school_age_camp) == "1":
+                tabla_2.loc[tabla_2.index == i ,"programtype"] = "school_age_camp"
 
-        tabla =  tabla.rename(columns = {'etiqueta':'label_value'})
+        tabla_2.drop(categorias_1, axis=1, inplace=True)
 
-        tabla = tabla.set_index(['center'])
+        tabla_6 = tabla_2.loc[:, ['center', 'etiqueta', 'score', 'borough', 'programtype']]
+        tabla_6 =  tabla_6.rename(columns = {'etiqueta':'label_value'})
+        tabla_6.set_index('center', inplace=True)
+
+
         g = Group()
-        xtab, _ = g.get_crosstabs(tabla)
+        xtab, _ = g.get_crosstabs(tabla_6)
         absolute_metrics = g.list_absolute_metrics(xtab)
         df_group = xtab[[col for col in xtab.columns if col not in absolute_metrics]]
         df_group['model_id'] = self.model_id

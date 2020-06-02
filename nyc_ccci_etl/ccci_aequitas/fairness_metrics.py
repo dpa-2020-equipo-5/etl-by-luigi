@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from nyc_ccci_etl.commons.configuration import get_database_connection_parameters
 from aequitas.group import Group
 from aequitas.fairness import Fairness
+from aequitas.bias import Bias
 from io import BytesIO
 import pickle
 class FairnessMetrics:
@@ -121,14 +122,11 @@ class FairnessMetrics:
         tabla_6.set_index('center', inplace=True)
 
         g = Group()
-
         xtab, _ = g.get_crosstabs(tabla_6)
 
-        absolute_metrics = g.list_absolute_metrics(xtab)
-
-        df_group = xtab[[col for col in xtab.columns if col not in absolute_metrics]]
-        df_group.head()
-
+        
+        b = Bias()
+        bdf = b.get_disparity_predefined_groups(xtab, original_df=tabla_6, ref_groups_dict={'borough':'brooklyn', 'programtype':'preschool'}, alpha=0.05, mask_significance=True)
         f = Fairness()
         fdf = f.get_group_value_fairness(bdf)
 
@@ -136,4 +134,4 @@ class FairnessMetrics:
         fdf['model_id'] = self.model_id
         fdf['date'] = self.date_param
         self.output_table = fdf
-        return [tuple(x) for x in fdf.to_numpy()], [(c, 'VARCHAR') for c in list(fdf.columns)]  
+        return [tuple(x) for x in fdf.to_numpy()], [(c.replace("for", "forr").replace(" ", "_"), 'VARCHAR') for c in list(fdf.columns)]  

@@ -124,16 +124,10 @@ class BiasMetrics:
 
         xtab, _ = g.get_crosstabs(tabla_6)
 
-        absolute_metrics = g.list_absolute_metrics(xtab)
-
-        df_group = xtab[[col for col in xtab.columns if col not in absolute_metrics]]
-        df_group.head()
-
-
         b = Bias()
         bdf = b.get_disparity_predefined_groups(xtab, original_df=tabla_6, ref_groups_dict={'borough':'brooklyn', 'programtype':'preschool'}, alpha=0.05, mask_significance=True)
 
         bdf['model_id'] = self.model_id
         bdf['date'] = self.date_param
         self.output_table = bdf
-        return [tuple(x) for x in bdf.to_numpy()], [(c, 'VARCHAR') for c in list(bdf.columns)]  
+        return [tuple(x) for x in bdf.to_numpy()], [(c.replace("for", "forr"), 'VARCHAR') for c in list(bdf.columns)]  

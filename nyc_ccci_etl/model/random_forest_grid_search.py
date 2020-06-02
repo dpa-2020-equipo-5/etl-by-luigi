@@ -38,19 +38,10 @@ class RandomForestGridSearch:
         print("="*100)
         print("best_params: ")
         print(grid_search.best_params_)
-
-        print("="*100)
-        print("best_score: ")
-        print(grid_search.best_score_)
-
         
         cv_results = pd.DataFrame(grid_search.cv_results_)
         print("="*100)
         print("cv_results: ")
         print(cv_results.head())
-
-        results = cv_results.sort_values(by='rank_test_score', ascending=True).head()
-        print("="*100)
-        print(results.iloc[0,:].params)
 
         return grid_search.best_params_, grid_search.best_score_
