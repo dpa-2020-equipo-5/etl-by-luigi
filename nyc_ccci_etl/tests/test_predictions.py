@@ -14,7 +14,7 @@ class TestPredictions(TestCase):
         predictions = predictor.output_table
         ran_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
-            self.assertEquals(len(predictions.columns), 6, note="Las predicciones deben tener las columnas center_id, probability, date, priority, matrix_uuid.")
+            self.assertGreater(len(predictions.columns), 6, note="Las predicciones deben tener las columnas center_id, probability, date, priority, matrix_uuid.")
             return {
                 "test":"test_predictions_have_correct_columns",
                 "status":"passed",
