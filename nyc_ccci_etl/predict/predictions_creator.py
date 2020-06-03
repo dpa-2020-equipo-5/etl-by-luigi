@@ -63,8 +63,8 @@ class PredictionsCreator:
         predicciones.drop(['class'], axis=1, inplace=True)
         predicciones.probability = predicciones.probability.astype(float)
         predicciones.priority = predicciones.priority.astype(int)
-        predicciones['matrix_uuid'] = self.matrix_uuid
+        #predicciones['matrix_uuid'] = self.matrix_uuid
         self.output_table = predicciones
         return [tuple(x) for x in predicciones.to_numpy()], [
-            ('center_id', 'VARCHAR'),('probability', 'FLOAT'),('date', 'timestamp'),('priority', 'INTEGER'), ('matrix_uuid', 'VARCHAR')
+            ('center_id', 'VARCHAR'),('probability', 'FLOAT'),('date', 'timestamp'),('priority', 'INTEGER')
         ]  
