@@ -19,7 +19,7 @@ class RandomForestGridSearch:
 
         hyper_param_grid = {
             'n_estimators': [1000], 
-            'max_depth': [5,10], 
+            'max_depth': [5], 
             'criterion':['gini'],
             'class_weight':["balanced"],
             'bootstrap':[True],
